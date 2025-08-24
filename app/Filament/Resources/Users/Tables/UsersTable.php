@@ -7,7 +7,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UsersTable
 {
@@ -37,7 +39,21 @@ class UsersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('role')
+                    ->options([
+                        'frontend' => 'Frontend Users',
+                        'admins' => 'Administrators',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (empty($data['value'])) {
+                            return $query;
+                        }
 
+                        return $data['value'] === 'frontend'
+                            ? $query->whereNull('role')
+                            : $query->whereNotNull('role');
+                    })
+                    ->default('frontend')
             ])
             ->recordActions([
                 ViewAction::make(),
