@@ -64,7 +64,6 @@ All endpoints are prefixed with `/api/v1`.
     "data": {
       "id": 1,
       "name": "Morning Yoga",
-      // ... all other fields as in the list
     }
   }
   ```

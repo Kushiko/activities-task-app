@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\Activities\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,56 +13,59 @@ class ActivityForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(2)
             ->components([
-                Grid::make(3)->schema([
-                    Group::make()->schema([
-                        TextInput::make('name')
-                            ->required()
-                            ->maxLength(50),
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(50)
+                    ->columnSpan(1),
 
-                        Textarea::make('short_description')
-                            ->required()
-                            ->maxLength(200)
-                            ->rows(3),
+                Select::make('participant_id')
+                    ->relationship('participant', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->columnSpan(1),
 
-                        Textarea::make('description')
-                            ->required()
-                            ->rows(6),
+                Textarea::make('short_description')
+                    ->required()
+                    ->maxLength(200)
+                    ->rows(3)
+                    ->columnSpanFull(),
 
-                        FileUpload::make('media_files')
-                            ->multiple()
-                            ->directory('activity-media')
-                            ->required(),
+                Textarea::make('description')
+                    ->required()
+                    ->rows(6)
+                    ->columnSpanFull(),
 
-                    ])->columnSpan(2),
+                FileUpload::make('media_files')
+                    ->multiple()
+                    ->directory('activity-media')
+                    ->required()
+                    ->columnSpanFull(),
 
-                    Group::make()->schema([
-                        Select::make('participant_id')
-                            ->relationship('participant', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                Select::make('activity_type_id')
+                    ->relationship('activityType', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->columnSpan(1),
 
-                        Select::make('activity_type_id')
-                            ->relationship('activityType', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                TextInput::make('registration_url')
+                    ->url()
+                    ->columnSpan(1),
 
-                        TextInput::make('registration_url')
-                            ->url(),
+                Textarea::make('location')
+                    ->json()
+                    ->required()
+                    ->rows(4)
+                    ->columnSpan(1),
 
-                        Textarea::make('location')
-                            ->json()
-                            ->required()
-                            ->rows(4),
-
-                        Textarea::make('schedule')
-                            ->json()
-                            ->required()
-                            ->rows(4),
-                    ])->columnSpan(1),
-                ]),
+                Textarea::make('schedule')
+                    ->json()
+                    ->required()
+                    ->rows(4)
+                    ->columnSpan(1),
             ]);
     }
 }

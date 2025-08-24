@@ -22,7 +22,7 @@ class ParticipantController extends Controller
      */
     public function store(Request $request)
     {
-        // For this task, the API is read-only
+
     }
 
     /**
@@ -38,7 +38,7 @@ class ParticipantController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // For this task, the API is read-only
+
     }
 
     /**
@@ -46,6 +46,6 @@ class ParticipantController extends Controller
      */
     public function destroy(string $id)
     {
-        // For this task, the API is read-only
+
     }
 }
