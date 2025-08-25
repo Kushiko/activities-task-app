@@ -1,61 +1,109 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Activities Task App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Тестовое задание для php back-end разработчика: Разработать административную панель и эндпоинты для фронтенда с документацией для разработчиков.
 
-## About Laravel
+## 🚀 О проекте
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Проект решает задачу создания системы для управления активностями, партнерами и типами активностей, а также предоставления этих данных через публичный API.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Ключевые фичи:**
+*   Административная панель (FilamentPHP) с полным CRUD для сущностей (Activities, Partners(Participants), Users).
+*   Гибкая система ролей и прав доступа (Admin, Editor, Viewer) на базе Laravel Policies и PHP Enums.
+*   Read-only API для вывода данных (Activities, Participants, Activity Types).
+*   Простой фронтенд(Blade) на "ванильном" JavaScript и Tailwind CSS для отображения данных из API.
+*   Автоматическое заполнение БД тестовыми данными через фабрики и сидер.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠 Технологии
 
-## Learning Laravel
+*   **Backend:** Laravel v12.25.0, PHP 8.4.11+
+*   **База данных:** MySQL
+*   **Админ-панель:** FilamentPHP 4.0.3
+*   **Фронтенд:** Blade, Vanilla JS, Tailwind CSS
+*   **Контейнеризация:** Docker, Laravel Sail
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ⚙️ Установка и запуск
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1.  **Клонируйте репозиторий:**
+    ```bash
+    git clone https://github.com/Kushiko/activities-task-app.git
+    ```
+2.  **Перейдите в директорию проекта:**
+    ```bash
+    cd activities-task-app
+    ```
+3.  **Скопируйте файл окружения:**
+    ```bash
+    cp .env.example .env
+    ```
+4.  **Запустите Docker-контейнеры:**
+    ```bash
+    docker compose up -d --build
+    ```
+5.  **Сгенерируйте ключ приложения:**
+    ```bash
+    docker compose exec app php artisan key:generate --ansi
+    ```
+6.  **Выполните миграции и заполните базу данных:**
+    ```bash
+    docker compose exec app php artisan migrate:fresh --seed
+    ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## API Эндпоинты
 
-## Laravel Sponsors
+Все эндпоинты API имеют префикс `/api/v1`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+В публичном API отсутствует эндпоинт для вывода списка пользователей. Публичный API должен предоставлять только те данные, которые необходимы для отображения на фронтенде, и не раскрывать персональные данные пользователей.
 
-### Premium Partners
+### Activities
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+*   **Получить список активностей:**
+    *   **URL:** `/api/v1/activities`
+    *   **Метод:** `GET`
+    *   **Описание:** Возвращает пагинированный список всех активностей. Поддерживает пагинацию через параметр `?page=`.
 
-## Contributing
+*   **Получить одну активность:**
+    *   **URL:** `/api/v1/activities/{id}`
+    *   **Метод:** `GET`
+    *   **Описание:** Возвращает одну активность по ее ID.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Participants
 
-## Code of Conduct
+*   **Получить список партнеров:**
+    *   **URL:** `/api/v1/participants`
+    *   **Метод:** `GET`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+*   **Получить одного партнера:**
+    *   **URL:** `/api/v1/participants/{id}`
+    *   **Метод:** `GET`
 
-## Security Vulnerabilities
+### Activity Types
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+*   **Получить список типов активностей:**
+    *   **URL:** `/api/v1/activity-types`
+    *   **Метод:** `GET`
 
-## License
+*   **Получить один тип активности:**
+    *   **URL:** `/api/v1/activity-types/{id}`
+    *   **Метод:** `GET`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Документация API
+
+Более подробная документация API находится в файле `api_docs.md` в корне проекта.
+
+## Доступ к приложению
+
+После выполнения всех шагов, вы можете получить доступ:
+
+*   **Админ-панель:** `http://localhost/admin`
+    *   Войти с `admin@example.com` и паролем `password`.
+*   **Фронтенд:**
+    *   Активности: `http://localhost/`
+    *   Партнеры: `http://localhost/participants`
+    *   Типы активностей: `http://localhost/activity-types`
+
+
+P.s.
+В тексте задания было указано: "Users - пользователи фронтенда, не админ панели".
+
+Я сделал так: В админ-панели, в разделе "Users", отображаются **все** пользователи системы (как администраторы, так и пользователи фронтенда). Решил, что так будет удобнее управлять всеми учетными записями в одном месте.
+Для удобства, по умолчанию отображаются только пользователи фронтенда (те, у кого нет роли). Однако, с помощью фильтра "Role" можно легко переключиться и просмотреть администраторов или всех пользователей. Иначе пришлось бы создавать ещё одну сущность для управления администраторами.

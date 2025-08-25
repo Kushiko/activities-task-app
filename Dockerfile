@@ -1,0 +1,56 @@
+# Dockerfile for Laravel Application
+
+# Base image
+FROM php:8.3-fpm as base
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl \
+    libpng-dev \
+    libjpeg-dev \
+    libgif-dev \
+    libonig-dev \
+    libxml2-dev \
+    supervisor \
+    libzip-dev \
+    libicu-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www
+
+# --- Build Stage ---
+FROM base as build
+
+# Copy application files
+COPY . .
+
+# Install composer dependencies
+RUN composer install --no-scripts --no-autoloader --no-dev
+RUN composer dump-autoload --optimize
+
+# Cache configuration
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+FROM base as final
+
+# Copy application files from build stage
+COPY --from=build /var/www /var/www
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
