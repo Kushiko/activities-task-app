@@ -15,9 +15,9 @@
 
 ## 🛠 Технологии
 
-*   **Backend:** Laravel v12.25.0, PHP 8.4.11+
+*   **Backend:** Laravel 12, PHP 8.2+
 *   **База данных:** MySQL
-*   **Админ-панель:** FilamentPHP 4.0.3
+*   **Админ-панель:** FilamentPHP v4
 *   **Фронтенд:** Blade, Vanilla JS, Tailwind CSS
 *   **Контейнеризация:** Docker, Laravel Sail
 

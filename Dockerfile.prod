@@ -1,6 +1,6 @@
-# Dockerfile for Laravel Application
+# Dockerfile for Laravel Application (Production)
 
-# Base image
+# --- Base Stage ---
 FROM php:8.3-fpm as base
 
 # Install system dependencies
@@ -33,15 +33,19 @@ FROM base as build
 # Copy application files
 COPY . .
 
-# Install composer dependencies
-RUN composer install --no-scripts --no-autoloader --no-dev
-RUN composer dump-autoload --optimize
+# Copy the production environment file
+COPY .env.prod .env
+
+
+# Install composer dependencies for production
+RUN composer install --optimize-autoloader
 
 # Cache configuration
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
 
+# --- Final Stage ---
 FROM base as final
 
 # Copy application files from build stage
@@ -49,7 +53,6 @@ COPY --from=build /var/www /var/www
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
