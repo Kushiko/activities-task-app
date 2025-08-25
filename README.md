@@ -23,30 +23,70 @@
 
 ## ⚙️ Установка и запуск
 
-1.  **Клонируйте репозиторий:**
+Ниже приведены инструкции для двух режимов запуска: для локальной разработки (Laravel Sail) и для production (Docker Compose).
+
+### 1. Окружение для разработки (Development)
+
+Для локальной разработки используется Laravel Sail, который предоставляет удобную обертку над Docker.
+
+**Шаги для запуска:**
+
+1.  **Клонируйте репозиторий и перейдите в папку проекта.**
+
+2.  **Установите зависимости:**
     ```bash
-    git clone https://github.com/Kushiko/activities-task-app.git
+    composer install
     ```
-2.  **Перейдите в директорию проекта:**
-    ```bash
-    cd activities-task-app
-    ```
+
 3.  **Скопируйте файл окружения:**
     ```bash
     cp .env.example .env
     ```
-4.  **Запустите Docker-контейнеры:**
+
+4.  **Сгенерируйте ключ приложения:**
     ```bash
-    docker compose up -d --build
+    php artisan key:generate
     ```
-5.  **Сгенерируйте ключ приложения:**
+
+5.  **Запустите Sail (Docker-контейнеры):**
     ```bash
-    docker compose exec app php artisan key:generate --ansi
+    ./vendor/bin/sail up -d
     ```
+
 6.  **Выполните миграции и заполните базу данных:**
     ```bash
-    docker compose exec app php artisan migrate:fresh --seed
+    ./vendor/bin/sail artisan migrate:fresh --seed
     ```
+
+**Доступ:**
+*   **Сайт:** `http://localhost`
+*   **Админ-панель:** `http://localhost/admin`
+
+### 2. Окружение для Production
+
+Для production используется Docker Compose напрямую со специальными, оптимизированными файлами.
+
+**Шаги для запуска:**
+
+1.  **Клонируйте репозиторий на сервере.**
+
+2.  **Соберите и запустите контейнеры:**
+    ```bash
+    docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+    ```
+3. **Сгенерируйте ключ**
+    ```bash
+    docker-compose exec app php artisan key:generate --ansi 
+    ```
+4.  **Выполните миграции:**
+    ```bash
+    docker compose exec app php artisan migrate:fresh --seed 
+    ```
+
+**Доступ:**
+*   **Сайт:** `http://localhost:8002`
+*   **Админ-панель:** `http://localhost:8002/admin`
+
 
 ## API Эндпоинты
 
