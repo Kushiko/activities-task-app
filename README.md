@@ -1,149 +1,110 @@
 # Activities Task App
 
-> Тестовое задание для php back-end разработчика: Разработать административную панель и эндпоинты для фронтенда с документацией для разработчиков.
+> A test assignment for a PHP back-end developer: Develop an admin panel and frontend endpoints with developer documentation.
 
-## 🚀 О проекте
+## 🚀 About The Project
 
-Проект решает задачу создания системы для управления активностями, партнерами и типами активностей, а также предоставления этих данных через публичный API.
+This project provides a system for managing activities, partners, and activity types, and exposing this data through a public API.
 
-**Ключевые фичи:**
-*   Административная панель (FilamentPHP) с полным CRUD для сущностей (Activities, Partners(Participants), Users).
-*   Гибкая система ролей и прав доступа (Admin, Editor, Viewer) на базе Laravel Policies и PHP Enums.
-*   Read-only API для вывода данных (Activities, Participants, Activity Types).
-*   Простой фронтенд(Blade) на "ванильном" JavaScript и Tailwind CSS для отображения данных из API.
-*   Автоматическое заполнение БД тестовыми данными через фабрики и сидер.
+**Key Features:**
+*   Admin panel (FilamentPHP) with full CRUD functionality for entities (Activities, Partners(Participants), Users).
+*   Flexible role and permission system (Admin, Editor, Viewer) based on Laravel Policies and PHP Enums.
+*   Read-only API for exposing data (Activities, Participants, Activity Types).
+*   A simple frontend (Blade) with vanilla JavaScript and Tailwind CSS to display data from the API.
+*   Automatic database seeding with test data via factories and seeders.
 
-## 🛠 Технологии
+## 🛠 Tech Stack
 
-*   **Backend:** Laravel 12, PHP 8.2+
-*   **База данных:** MySQL
-*   **Админ-панель:** FilamentPHP v4
-*   **Фронтенд:** Blade, Vanilla JS, Tailwind CSS
-*   **Контейнеризация:** Docker, Laravel Sail
+*   **Backend:** Laravel v12.25.0, PHP 8.4.11+
+*   **Database:** MySQL
+*   **Admin Panel:** FilamentPHP 4.0.3
+*   **Frontend:** Blade, Vanilla JS, Tailwind CSS
+*   **Containerization:** Docker, Laravel Sail
 
-## ⚙️ Установка и запуск
+## ⚙️ Installation and Setup
 
-Ниже приведены инструкции для двух режимов запуска: для локальной разработки (Laravel Sail) и для production (Docker Compose).
-
-### 1. Окружение для разработки (Development)
-
-Для локальной разработки используется Laravel Sail, который предоставляет удобную обертку над Docker.
-
-**Шаги для запуска:**
-
-1.  **Клонируйте репозиторий и перейдите в папку проекта.**
-
-2.  **Установите зависимости:**
+1.  **Clone the repository:**
     ```bash
-    composer install
+    git clone https://github.com/Kushiko/activities-task-app.git
     ```
-
-3.  **Скопируйте файл окружения:**
+2.  **Navigate to the project directory:**
+    ```bash
+    cd activities-task-app
+    ```
+3.  **Copy the environment file:**
     ```bash
     cp .env.example .env
     ```
-
-4.  **Сгенерируйте ключ приложения:**
+4.  **Start the Docker containers:**
     ```bash
-    php artisan key:generate
+    docker compose up -d --build
+    ```
+5.  **Generate the application key:**
+    ```bash
+    docker compose exec app php artisan key:generate --ansi
+    ```
+6.  **Run migrations and seed the database:**
+    ```bash
+    docker compose exec app php artisan migrate:fresh --seed
     ```
 
-5.  **Запустите Sail (Docker-контейнеры):**
-    ```bash
-    ./vendor/bin/sail up -d
-    ```
+## API Endpoints
 
-6.  **Выполните миграции и заполните базу данных:**
-    ```bash
-    ./vendor/bin/sail artisan migrate:fresh --seed
-    ```
+All API endpoints are prefixed with `/api/v1`.
 
-**Доступ:**
-*   **Сайт:** `http://localhost`
-*   **Админ-панель:** `http://localhost/admin`
-
-### 2. Окружение для Production
-
-Для production используется Docker Compose напрямую со специальными, оптимизированными файлами.
-
-**Шаги для запуска:**
-
-1.  **Клонируйте репозиторий на сервере.**
-
-2.  **Соберите и запустите контейнеры:**
-    ```bash
-    docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
-    ```
-3. **Сгенерируйте ключ**
-    ```bash
-    docker-compose exec app php artisan key:generate --ansi 
-    ```
-4.  **Выполните миграции:**
-    ```bash
-    docker compose exec app php artisan migrate:fresh --seed 
-    ```
-
-**Доступ:**
-*   **Сайт:** `http://localhost:8002`
-*   **Админ-панель:** `http://localhost:8002/admin`
-
-
-## API Эндпоинты
-
-Все эндпоинты API имеют префикс `/api/v1`.
-
-В публичном API отсутствует эндпоинт для вывода списка пользователей. Публичный API должен предоставлять только те данные, которые необходимы для отображения на фронтенде, и не раскрывать персональные данные пользователей.
+The public API does not include an endpoint for listing users. The public API should only provide data necessary for the frontend display and not expose personal user data.
 
 ### Activities
 
-*   **Получить список активностей:**
+*   **Get a list of activities:**
     *   **URL:** `/api/v1/activities`
-    *   **Метод:** `GET`
-    *   **Описание:** Возвращает пагинированный список всех активностей. Поддерживает пагинацию через параметр `?page=`.
+    *   **Method:** `GET`
+    *   **Description:** Returns a paginated list of all activities. Supports pagination via the `?page=` parameter.
 
-*   **Получить одну активность:**
+*   **Get a single activity:**
     *   **URL:** `/api/v1/activities/{id}`
-    *   **Метод:** `GET`
-    *   **Описание:** Возвращает одну активность по ее ID.
+    *   **Method:** `GET`
+    *   **Description:** Returns a single activity by its ID.
 
 ### Participants
 
-*   **Получить список партнеров:**
+*   **Get a list of participants:**
     *   **URL:** `/api/v1/participants`
-    *   **Метод:** `GET`
+    *   **Method:** `GET`
 
-*   **Получить одного партнера:**
+*   **Get a single participant:**
     *   **URL:** `/api/v1/participants/{id}`
-    *   **Метод:** `GET`
+    *   **Method:** `GET`
 
 ### Activity Types
 
-*   **Получить список типов активностей:**
+*   **Get a list of activity types:**
     *   **URL:** `/api/v1/activity-types`
-    *   **Метод:** `GET`
+    *   **Method:** `GET`
 
-*   **Получить один тип активности:**
+*   **Get a single activity type:**
     *   **URL:** `/api/v1/activity-types/{id}`
-    *   **Метод:** `GET`
+    *   **Method:** `GET`
 
-### Документация API
+### API Documentation
 
-Более подробная документация API находится в файле `api_docs.md` в корне проекта.
+More detailed API documentation can be found in the `api_docs.md` file in the project root.
 
-## Доступ к приложению
+## Application Access
 
-После выполнения всех шагов, вы можете получить доступ:
+After completing all the steps, you can access the application:
 
-*   **Админ-панель:** `http://localhost/admin`
-    *   Войти с `admin@example.com` и паролем `password`.
-*   **Фронтенд:**
-    *   Активности: `http://localhost/`
-    *   Партнеры: `http://localhost/participants`
-    *   Типы активностей: `http://localhost/activity-types`
+*   **Admin Panel:** `http://localhost/admin`
+    *   Log in with `admin@example.com` and password `password`.
+*   **Frontend:**
+    *   Activities: `http://localhost/`
+    *   Participants: `http://localhost/participants`
+    *   Activity Types: `http://localhost/activity-types`
 
 
-P.s.
-В тексте задания было указано: "Users - пользователи фронтенда, не админ панели".
+---
+*P.S. On User Roles*
 
-Я сделал так: В админ-панели, в разделе "Users", отображаются **все** пользователи системы (как администраторы, так и пользователи фронтенда). Решил, что так будет удобнее управлять всеми учетными записями в одном месте.
-Для удобства, по умолчанию отображаются только пользователи фронтенда (те, у кого нет роли). Однако, с помощью фильтра "Role" можно легко переключиться и просмотреть администраторов или всех пользователей. Иначе пришлось бы создавать ещё одну сущность для управления администраторами.
+*The assignment specified: "Users - frontend users, not admin panel users".*
+
+*I made the design decision to display all system users (both admins and frontend users) within the "Users" section of the admin panel. I decided it would be more convenient to manage all accounts in one place. By default, only frontend users (those without a specific role) are displayed. However, using the "Role" filter, one can easily switch to view administrators or all users. The alternative would have been to create a separate entity for managing administrators.*
